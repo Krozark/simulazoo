@@ -2,9 +2,13 @@ import logging
 
 from snecs import Query, World, new_entity
 
-from .components import AnimalComponent, PlantComponent
+from .components import AnimalComponent, LivingBeingComponent, PlantComponent
 
 logger = logging.getLogger(__name__)
+
+__all__ = [
+    "Enclosure",
+]
 
 
 class Enclosure:
@@ -28,16 +32,19 @@ class Enclosure:
         # start of report
 
         # stuff with plants
-        plant_query = Query([PlantComponent], world=self.world)
+        plant_query = Query([LivingBeingComponent, PlantComponent], world=self.world)
         plant_number = sum(1 for _ in plant_query)
         report.append(f"Plant number: {plant_number}")
 
         # stuff with animals
-        animal_query = Query([AnimalComponent], world=self.world)
+        animal_query = Query([LivingBeingComponent, AnimalComponent], world=self.world)
         report.append("Animals: ")
-        for entity, (animal_component,) in animal_query:
+        for entity, (
+            living_being_cmp,
+            animal_cmp,
+        ) in animal_query:
             report.append(
-                f" - Name: {animal_component.name}, Sex: {animal_component.sex.name}"
+                f" - Name: {animal_cmp.name}, Sex: {animal_cmp.sex.name}, Specie: {living_being_cmp.specie}"
             )
 
         # end of report

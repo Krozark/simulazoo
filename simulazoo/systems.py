@@ -1,5 +1,7 @@
 from snecs import Query
 
+__all__ = []
+
 
 class SystemBase:
     COMPONENTS = ()

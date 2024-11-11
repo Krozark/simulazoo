@@ -1,11 +1,14 @@
-from enum import Enum
-
 from snecs import RegisteredComponent
 
+from .enums import SexEnum
 
-class SexEnum(Enum):
-    MALE = "M"
-    FEMALE = "F"
+__all__ = [
+    "AnimalComponent",
+    "PlantComponent",
+    "LivingBeingComponent",
+    "ZoophageComponent",
+    "PhytophageComponent",
+]
 
 
 class AnimalComponent(RegisteredComponent):
@@ -13,9 +16,19 @@ class AnimalComponent(RegisteredComponent):
         self.name = name
         self.sex = sex
 
-    def __str__(self):
-        return f"{self.name} {self.sex}"
-
 
 class PlantComponent(RegisteredComponent):
+    pass
+
+
+class LivingBeingComponent(RegisteredComponent):
+    def __init__(self, specie: str):
+        self.specie = specie
+
+
+class ZoophageComponent(RegisteredComponent):
+    pass
+
+
+class PhytophageComponent(RegisteredComponent):
     pass

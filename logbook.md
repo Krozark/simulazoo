@@ -24,3 +24,14 @@ Instead, using the ECS (Entity Component System) design pattern, widely used in 
 
 For this, we will use the Python library "snecs," which meets our needs and also includes a serialization/deserialization 
 feature that will be particularly useful for Story #9, focused on saving.
+
+## Story 2
+
+In this story, we need to add the concept of species as well as dietary habits. 
+Since the concept of species applies to all living organisms, this property will also be added to plants for the 
+sake of consistency (this may enable better identification later if needed). 
+A specific component will be created to represent it.
+
+As for dietary habits, there are many types. For now, only carnivorous (the correct term being zoophage)
+and herbivorous (the correct term being phytophage) diets will be considered.
+Each dietary habit will be represented by a distinct component.
