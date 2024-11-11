@@ -8,3 +8,9 @@ Simulateur de zoo
 pipenv shell
 pip install -r ./requirements.txt
 ```
+
+# usage
+
+```shell
+ python -m simulazoo
+```
