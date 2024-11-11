@@ -2,8 +2,16 @@ import argparse
 import logging
 import sys
 
-from .components import AnimalComponent, PlantComponent, SexEnum
+from .components import (
+    AnimalComponent,
+    LivingBeingComponent,
+    PhytophageComponent,
+    PlantComponent,
+    ZoophageComponent,
+)
 from .enclosure import Enclosure
+from .enums import SexEnum
+
 
 logger = logging.getLogger(__name__)
 
@@ -15,12 +23,83 @@ def setup_logging(verbose=False):
 def build_enclosure():
     enclosure = Enclosure("first enclosure")
     # create 3 plants
-    enclosure.create_entity(PlantComponent())
-    enclosure.create_entity(PlantComponent())
-    enclosure.create_entity(PlantComponent())
-    # create 2 animals
-    enclosure.create_entity(AnimalComponent(name="Alice", sex=SexEnum.FEMALE))
-    enclosure.create_entity(AnimalComponent(name="Bob", sex=SexEnum.MALE))
+    for i in range(0, 3):
+        enclosure.create_entity(
+            LivingBeingComponent("Fern"),
+            PlantComponent(),
+        )
+    # create some animals
+    ## Lion
+    enclosure.create_entity(
+        LivingBeingComponent("Lion"),
+        ZoophageComponent(),
+        AnimalComponent(name="Alice", sex=SexEnum.FEMALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Lion"),
+        ZoophageComponent(),
+        AnimalComponent(name="Bob", sex=SexEnum.MALE),
+    )
+    ## Tiger
+    enclosure.create_entity(
+        LivingBeingComponent("Tiger"),
+        ZoophageComponent(),
+        AnimalComponent(name="Carol", sex=SexEnum.FEMALE),
+    )
+    ## Coyote
+    enclosure.create_entity(
+        LivingBeingComponent("Coyote"),
+        ZoophageComponent(),
+        AnimalComponent(name="Dave", sex=SexEnum.MALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Coyote"),
+        ZoophageComponent(),
+        AnimalComponent(name="Eve", sex=SexEnum.FEMALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Coyote"),
+        ZoophageComponent(),
+        AnimalComponent(name="Frank", sex=SexEnum.MALE),
+    )
+    ## Elephant
+    enclosure.create_entity(
+        LivingBeingComponent("Elephant"),
+        PhytophageComponent(),
+        AnimalComponent(name="Grace", sex=SexEnum.FEMALE),
+    )
+    ## Giraffe
+    enclosure.create_entity(
+        LivingBeingComponent("Giraffe"),
+        PhytophageComponent(),
+        AnimalComponent(name="Heidi", sex=SexEnum.FEMALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Giraffe"),
+        PhytophageComponent(),
+        AnimalComponent(name="Ivan", sex=SexEnum.MALE),
+    )
+    ## Antelope
+    enclosure.create_entity(
+        LivingBeingComponent("Antelope"),
+        PhytophageComponent(),
+        AnimalComponent(name="Judy", sex=SexEnum.FEMALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Antelope"),
+        PhytophageComponent(),
+        AnimalComponent(name="Kevin", sex=SexEnum.MALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Antelope"),
+        PhytophageComponent(),
+        AnimalComponent(name="Laura", sex=SexEnum.FEMALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Antelope"),
+        PhytophageComponent(),
+        AnimalComponent(name="Mallory", sex=SexEnum.MALE),
+    )
     return enclosure
 
 
@@ -30,9 +109,11 @@ def main():
     parser.add_argument("-v", "--verbose", action="store_true")
     # parse the arguments
     args = parser.parse_args()
-
+    # setup logging
     setup_logging(verbose=args.verbose)
+    # create enclosure
     enclosure = build_enclosure()
+    # simulate 1 day
     enclosure.process_day()
     return 0
 
