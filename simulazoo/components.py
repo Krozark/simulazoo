@@ -1,7 +1,7 @@
 from random import randint
 
 from snecs import RegisteredComponent
-
+from . import const
 from .enums import SexEnum
 
 __all__ = [
@@ -26,8 +26,10 @@ class PlantComponent(RegisteredComponent):
 class LivingBeingComponent(RegisteredComponent):
     def __init__(self, specie: str, age: int = None):
         self.specie = specie
-        self.hp = 10
-        self.age = age or randint(0, 20)
+        self.hp = const.LIVING_BEING_DEFAULT_HP
+        self.age = age or randint(
+            const.LIVING_BEING_MIN_AGE, const.LIVING_BEING_MAX_AGE
+        )
 
 
 class ZoophageComponent(RegisteredComponent):

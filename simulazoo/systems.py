@@ -1,6 +1,7 @@
 import random
 
 from snecs import Query, entity_component, schedule_for_deletion
+from . import const
 
 from .components import (
     AnimalComponent,
@@ -18,8 +19,9 @@ __all__ = [
     "PhytophageSystem",
 ]
 
-
-## Bases
+###########
+## Bases ##
+###########
 
 
 class SystemBase:
@@ -47,7 +49,7 @@ class _DietBaseSystem(SystemBase):
 
     def process_entity(self, entity, components, world):
         living_being_cmp = components[0]
-        if living_being_cmp.hp > 5:
+        if living_being_cmp.hp > const.ANIMAL_HUNGER_THRESHOLD:
             # no need to feed today
             return
 
@@ -68,7 +70,9 @@ class _DietBaseSystem(SystemBase):
         raise NotImplementedError
 
 
-## Real systems
+##################
+## Real systems ##
+##################
 
 
 class LivingBeingSystem(SystemBase):
@@ -76,8 +80,11 @@ class LivingBeingSystem(SystemBase):
 
     def process_entity(self, entity, components, world):
         living_being_cmp = components[0]
-        living_being_cmp.age += 1
-        if living_being_cmp.hp <= 0 or living_being_cmp.age > 20:
+        living_being_cmp.age += const.LIVING_BEING_DAILY_INC_AGE
+        if (
+            living_being_cmp.hp <= const.LIVING_BEING_DEATH_THRESHOLD
+            or living_being_cmp.age > const.LIVING_BEING_MAX_AGE
+        ):
             schedule_for_deletion(entity, world=world)
 
 
@@ -89,7 +96,7 @@ class PlantSystem(SystemBase):
 
     def process_entity(self, entity, components, world):
         living_being_cmp = components[0]
-        living_being_cmp.hp += 1
+        living_being_cmp.hp += const.PLANT_DAILY_REGENERATION
 
 
 class AnimalSystem(SystemBase):
@@ -100,7 +107,11 @@ class AnimalSystem(SystemBase):
 
     def process_entity(self, entity, components, world):
         living_being_cmp = components[0]
-        living_being_cmp.hp -= 1
+        living_being_cmp.hp += const.ANIMAL_DAILY_REGENERATION
+
+        if living_being_cmp.hp > const.ANIMAL_HUNGER_THRESHOLD:
+            # no need to feed today, let find a partner to make a baby
+            pass
 
 
 class ZoophageSystem(_DietBaseSystem):
@@ -115,10 +126,10 @@ class ZoophageSystem(_DietBaseSystem):
     )
 
     def eat(self, components, target_components, world):
-        # animals gain 5 HP by eating;
-        components[0].hp += 5
+        # zoophage gain 5 HP by eating;
+        components[0].hp += const.ZOOPHAGE_RECOVERY_AFTER_EATING
         # animals loose 4 HP when eaten
-        target_components[0].hp -= 4
+        target_components[0].hp -= const.ANIMAL_LIFE_LOST_FROM_ATTACK
 
 
 class PhytophageSystem(_DietBaseSystem):
@@ -134,6 +145,6 @@ class PhytophageSystem(_DietBaseSystem):
 
     def eat(self, components, target_components, world):
         # animals gain 3 HP by eating;
-        components[0].hp += 3
+        components[0].hp += const.PHYTOPHAGE_RECOVERY_AFTER_EATING
         # plant loose 2 HP when eaten
-        target_components[0].hp -= 2
+        target_components[0].hp -= const.PLANT_LIFE_LOST_FROM_ATTACK
