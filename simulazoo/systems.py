@@ -133,7 +133,7 @@ class PhytophageSystem(_DietBaseSystem):
     )
 
     def eat(self, components, target_components, world):
-        # animals gain 3 HP by eating;
+        # Phytophage gain 3 HP by eating;
         components[0].hp += 3
         # plant loose 2 HP when eaten
         target_components[0].hp -= 2
