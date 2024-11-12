@@ -3,7 +3,13 @@ import logging
 from snecs import Query, World, new_entity, process_pending_deletions
 
 from .components import AnimalComponent, LivingBeingComponent, PlantComponent
-from .systems import PhytophageSystem, ZoophageSystem, LivingBeingSystem
+from .systems import (
+    LivingBeingSystem,
+    PhytophageSystem,
+    PlantSystem,
+    ZoophageSystem,
+    AnimalSystem,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +43,14 @@ class Enclosure:
         # stuff with plants
         plant_query = Query([LivingBeingComponent, PlantComponent], world=self.world)
         plant_number = sum(1 for _ in plant_query)
-        report.append(f"Plant number: {plant_number}")
+        report.append(f"Plant ({plant_number}):")
+        for entity, (
+            living_being_cmp,
+            animal_cmp,
+        ) in plant_query:
+            report.append(
+                f" - Specie: {living_being_cmp.specie}, HP {living_being_cmp.hp}"
+            )
 
         # stuff with animals
         animal_query = Query([LivingBeingComponent, AnimalComponent], world=self.world)
@@ -48,7 +61,7 @@ class Enclosure:
             animal_cmp,
         ) in animal_query:
             report.append(
-                f" - Name: {animal_cmp.name}, Sex: {animal_cmp.sex.name}, Specie: {living_being_cmp.specie}"
+                f" - Name: {animal_cmp.name}, Sex: {animal_cmp.sex.name}, Specie: {living_being_cmp.specie}, HP {living_being_cmp.hp}"
             )
 
         # end of report
@@ -58,7 +71,12 @@ class Enclosure:
     @staticmethod
     def get_systems():
         return (
+            # manage need of food
+            PlantSystem(),
+            AnimalSystem(),
+            # manage eat
             PhytophageSystem(),
             ZoophageSystem(),
+            # manage death
             LivingBeingSystem(),
         )

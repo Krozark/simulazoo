@@ -61,3 +61,5 @@ The concept of a living being was already introduced in Story 3, so we will reus
 the health points (HP). We will also add a new system to handle the death of entities due to a lack of HP.
 
 Another system for managing plants and animals will also be introduced.
+
+We will also modify the report to display the HP information.
