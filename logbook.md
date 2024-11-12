@@ -90,3 +90,5 @@ We will therefore assume that the configuration allows for creating species and 
 
 The configuration file will consist of a set of species names, each associated with the components that compose it, 
 and a list of entity of this species to create with their attributes.
+
+See `config.json` for an example of config file.
