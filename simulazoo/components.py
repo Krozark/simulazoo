@@ -28,8 +28,10 @@ class LivingBeingComponent(RegisteredComponent):
 class AnimalComponent(RegisteredComponent):
     __slots__ = ("sex", "name")
 
-    def __init__(self, name: str = None, sex: SexEnum = None):
-        self.sex = SexEnum[sex] if sex else random.choice([i for i in SexEnum])
+    def __init__(self, name: str = None, sex=None):
+        if type(sex) is str:
+            sex = SexEnum[sex]
+        self.sex = sex if sex else random.choice([i for i in SexEnum])
         self.name = name or names.get_first_name(gender=self.sex.name.lower())
 
 
