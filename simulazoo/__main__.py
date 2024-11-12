@@ -22,12 +22,17 @@ def setup_logging(verbose=False):
 
 def build_enclosure():
     enclosure = Enclosure("first enclosure")
-    # create 3 plants
+    # create 3 Fern plants
     for i in range(0, 3):
         enclosure.create_entity(
             LivingBeingComponent("Fern"),
             PlantComponent(),
         )
+    # create 1 Oak tree plants
+    enclosure.create_entity(
+        LivingBeingComponent("Oak tree"),
+        PlantComponent(),
+    )
     # create some animals
     ## Lion
     enclosure.create_entity(
