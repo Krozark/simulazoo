@@ -1,6 +1,14 @@
 import logging
-
-from snecs import Query, World, new_entity, process_pending_deletions
+import json
+from snecs import (
+    Query,
+    World,
+    new_entity,
+    process_pending_deletions,
+    serialize_world,
+    deserialize_world,
+)
+from snecs.ecs import move_world
 
 from .components import AnimalComponent, LivingBeingComponent, PlantComponent
 from .systems import (
@@ -10,6 +18,7 @@ from .systems import (
     PlantSystem,
     ZoophageSystem,
 )
+from .config import parse_config_file
 
 logger = logging.getLogger(__name__)
 
@@ -67,6 +76,25 @@ class Enclosure:
         # end of report
         report.append("==============================")
         logger.info("\n" + "\n".join(report))
+
+    def save_to_file(self, file):
+        serialized = serialize_world(self.world)
+        json.dump(serialized, file)
+
+    def load_from_file(self, file):
+        serialized = json.load(file)
+        new_world = deserialize_world(serialized)
+        move_world(new_world, self.world)
+
+    def load_from_config_file(self, file):
+        logger.info("Load config file")
+        for entity_components in parse_config_file(file):
+            self.create_entity(
+                *[
+                    component_class(**components_kwargs)
+                    for component_class, components_kwargs in entity_components.items()
+                ]
+            )
 
     @staticmethod
     def get_systems():
