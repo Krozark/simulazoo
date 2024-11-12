@@ -6,9 +6,9 @@ from .enums import SexEnum
 import names
 
 __all__ = [
+    "LivingBeingComponent",
     "AnimalComponent",
     "PlantComponent",
-    "LivingBeingComponent",
     "ZoophageComponent",
     "PhytophageComponent",
 ]
@@ -32,24 +32,9 @@ class EmptyComponentBase(Component):
 ################
 
 
-class AnimalComponent(RegisteredComponent):
-    def __init__(self, name: str = None, sex: SexEnum = None):
-        self.sex = sex or random.choice([i for i in SexEnum])
-        self.name = name or names.get_first_name(gender=self.sex.name.lower())
-
-    def serialize(self):
-        return self.sex, self.name
-
-    @classmethod
-    def deserialize(cls, serialized):
-        return cls(*serialized)
-
-
-class PlantComponent(EmptyComponentBase, RegisteredComponent):
-    pass
-
-
 class LivingBeingComponent(RegisteredComponent):
+    __slots__ = ("specie", "hp", "age")
+
     def __init__(self, specie: str, age: int = None, hp: int = None):
         self.specie = specie
         self.hp = hp or const.LIVING_BEING_DEFAULT_HP
@@ -63,6 +48,23 @@ class LivingBeingComponent(RegisteredComponent):
     @classmethod
     def deserialize(cls, serialized):
         return cls(*serialized)
+
+
+class AnimalComponent(RegisteredComponent):
+    def __init__(self, name: str = None, sex: SexEnum = None):
+        self.sex = SexEnum[sex] if sex else random.choice([i for i in SexEnum])
+        self.name = name or names.get_first_name(gender=self.sex.name.lower())
+
+    def serialize(self):
+        return self.sex, self.name
+
+    @classmethod
+    def deserialize(cls, serialized):
+        return cls(*serialized)
+
+
+class PlantComponent(EmptyComponentBase, RegisteredComponent):
+    pass
 
 
 class ZoophageComponent(EmptyComponentBase, RegisteredComponent):
