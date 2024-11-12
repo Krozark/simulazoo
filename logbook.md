@@ -106,4 +106,4 @@ making it incompatible to load both a configuration and a save at the same time.
 ## Story 10
 
 For this story, we will configure Docker for the project to make its usage easier.
-
+A prompt CLI will also be added for a more user-friendly experience.
