@@ -5,6 +5,6 @@ __all__ = [
 ]
 
 
-class SexEnum(Enum):
+class SexEnum(str, Enum):
     MALE = "M"
     FEMALE = "F"

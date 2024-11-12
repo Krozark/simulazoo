@@ -120,6 +120,7 @@ def main():
     parser = argparse.ArgumentParser(prog="Simulazoo", description="A zoo simulator")
     parser.add_argument("-v", "--verbose", action="store_true")
     parser.add_argument("-d", "--days", type=check_positive, default=1)
+    parser.add_argument("-o", "--output", type=argparse.FileType("w"))
     # parse the arguments
     args = parser.parse_args()
     # setup logging
@@ -130,6 +131,8 @@ def main():
     # simulate days
     for day in range(0, args.days):
         enclosure.process_day()
+    if args.output:
+        enclosure.save_to_file(args.output)
     return 0
 
 

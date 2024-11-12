@@ -1,6 +1,6 @@
 import logging
-
-from snecs import Query, World, new_entity, process_pending_deletions
+import json
+from snecs import Query, World, new_entity, process_pending_deletions, serialize_world
 
 from .components import AnimalComponent, LivingBeingComponent, PlantComponent
 from .systems import (
@@ -67,6 +67,10 @@ class Enclosure:
         # end of report
         report.append("==============================")
         logger.info("\n" + "\n".join(report))
+
+    def save_to_file(self, file):
+        serialized = serialize_world(self.world)
+        json.dump(serialized, file)
 
     @staticmethod
     def get_systems():
