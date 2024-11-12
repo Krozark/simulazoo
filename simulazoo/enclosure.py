@@ -1,16 +1,25 @@
-import logging
 import json
+import logging
+
 from snecs import (
     Query,
     World,
+    deserialize_world,
     new_entity,
     process_pending_deletions,
     serialize_world,
-    deserialize_world,
 )
 from snecs.ecs import move_world
 
-from .components import AnimalComponent, LivingBeingComponent, PlantComponent
+from .components import (
+    AnimalComponent,
+    LivingBeingComponent,
+    PhytophageComponent,
+    PlantComponent,
+    ZoophageComponent,
+)
+from .config import parse_config_file
+from .enums import SexEnum
 from .systems import (
     AnimalSystem,
     LivingBeingSystem,
@@ -18,12 +27,12 @@ from .systems import (
     PlantSystem,
     ZoophageSystem,
 )
-from .config import parse_config_file
 
 logger = logging.getLogger(__name__)
 
 __all__ = [
     "Enclosure",
+    "fill_default_enclosure",
 ]
 
 
@@ -38,14 +47,15 @@ class Enclosure:
         entity = new_entity(components=components, world=self.world)
         return entity
 
-    def process_day(self):
+    def process_day(self, log_report=True):
         for system in self._systems:
             system.process(world=self.world)
         process_pending_deletions(world=self.world)
         self._day += 1
-        self.log_report()
+        if log_report:
+            self.log_report()
 
-    def log_report(self):
+    def build_report(self):
         report = [f"==== Report of enclosure {self.world.name}: day {self._day} ==="]
         # start of report
 
@@ -75,7 +85,11 @@ class Enclosure:
 
         # end of report
         report.append("==============================")
-        logger.info("\n" + "\n".join(report))
+        return "\n".join(report)
+
+    def log_report(self):
+        report = self.build_report()
+        logger.info("\n" + report)
 
     def save_to_file(self, file):
         serialized = serialize_world(self.world)
@@ -108,3 +122,89 @@ class Enclosure:
             # manage death
             LivingBeingSystem(),
         )
+
+
+def fill_default_enclosure(enclosure):
+    # create 3 Fern plants
+    for i in range(0, 3):
+        enclosure.create_entity(
+            LivingBeingComponent("Fern"),
+            PlantComponent(),
+        )
+    # create 1 Oak tree plants
+    enclosure.create_entity(
+        LivingBeingComponent("Oak tree"),
+        PlantComponent(),
+    )
+    # create some animals
+    ## Lion
+    enclosure.create_entity(
+        LivingBeingComponent("Lion"),
+        ZoophageComponent(),
+        AnimalComponent(name="Alice", sex=SexEnum.FEMALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Lion"),
+        ZoophageComponent(),
+        AnimalComponent(name="Bob", sex=SexEnum.MALE),
+    )
+    ## Tiger
+    enclosure.create_entity(
+        LivingBeingComponent("Tiger"),
+        ZoophageComponent(),
+        AnimalComponent(name="Carol", sex=SexEnum.FEMALE),
+    )
+    ## Coyote
+    enclosure.create_entity(
+        LivingBeingComponent("Coyote"),
+        ZoophageComponent(),
+        AnimalComponent(name="Dave", sex=SexEnum.MALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Coyote"),
+        ZoophageComponent(),
+        AnimalComponent(name="Eve", sex=SexEnum.FEMALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Coyote"),
+        ZoophageComponent(),
+        AnimalComponent(name="Frank", sex=SexEnum.MALE),
+    )
+    ## Elephant
+    enclosure.create_entity(
+        LivingBeingComponent("Elephant"),
+        PhytophageComponent(),
+        AnimalComponent(name="Grace", sex=SexEnum.FEMALE),
+    )
+    ## Giraffe
+    enclosure.create_entity(
+        LivingBeingComponent("Giraffe"),
+        PhytophageComponent(),
+        AnimalComponent(name="Heidi", sex=SexEnum.FEMALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Giraffe"),
+        PhytophageComponent(),
+        AnimalComponent(name="Ivan", sex=SexEnum.MALE),
+    )
+    ## Antelope
+    enclosure.create_entity(
+        LivingBeingComponent("Antelope"),
+        PhytophageComponent(),
+        AnimalComponent(name="Judy", sex=SexEnum.FEMALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Antelope"),
+        PhytophageComponent(),
+        AnimalComponent(name="Kevin", sex=SexEnum.MALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Antelope"),
+        PhytophageComponent(),
+        AnimalComponent(name="Laura", sex=SexEnum.FEMALE),
+    )
+    enclosure.create_entity(
+        LivingBeingComponent("Antelope"),
+        PhytophageComponent(),
+        AnimalComponent(name="Mallory", sex=SexEnum.MALE),
+    )

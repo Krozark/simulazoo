@@ -102,3 +102,8 @@ See `config.json` for an example of config file.
 For the final story, we will use the serialization/deserialization capabilities of snecs,
 making it incompatible to load both a configuration and a save at the same time.
 
+
+## Story 10
+
+For this story, we will configure Docker for the project to make its usage easier.
+
