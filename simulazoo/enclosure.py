@@ -1,8 +1,9 @@
 import logging
 
-from snecs import Query, World, new_entity
+from snecs import Query, World, new_entity, process_pending_deletions
 
 from .components import AnimalComponent, LivingBeingComponent, PlantComponent
+from .systems import PhytophageSystem, ZoophageSystem
 
 logger = logging.getLogger(__name__)
 
@@ -12,22 +13,24 @@ __all__ = [
 
 
 class Enclosure:
+
     def __init__(self, name=None):
         self.world = World(name)
         self._day = 0
+        self._systems = self.get_systems()
 
     def create_entity(self, *components):
         entity = new_entity(components=components, world=self.world)
         return entity
 
     def process_day(self):
-        for system in self.get_systems():
-            system.process()
+        for system in self._systems:
+            system.process(world=self.world)
+        process_pending_deletions(world=self.world)
         self._day += 1
-        report = self.build_report()
-        logger.info("\n" + report)
+        self.log_report()
 
-    def build_report(self):
+    def log_report(self):
         report = [f"==== Report of enclosure {self.world.name}: day {self._day} ==="]
         # start of report
 
@@ -38,7 +41,8 @@ class Enclosure:
 
         # stuff with animals
         animal_query = Query([LivingBeingComponent, AnimalComponent], world=self.world)
-        report.append("Animals: ")
+        animal_number = sum(1 for _ in animal_query)
+        report.append(f"Animals ({animal_number}): ")
         for entity, (
             living_being_cmp,
             animal_cmp,
@@ -49,8 +53,11 @@ class Enclosure:
 
         # end of report
         report.append("==============================")
-        return "\n".join(report)
+        logger.info("\n" + "\n".join(report))
 
     @staticmethod
     def get_systems():
-        return ()
+        return (
+            PhytophageSystem(),
+            ZoophageSystem(),
+        )

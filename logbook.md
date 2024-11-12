@@ -35,3 +35,22 @@ A specific component will be created to represent it.
 As for dietary habits, there are many types. For now, only carnivorous (the correct term being zoophage)
 and herbivorous (the correct term being phytophage) diets will be considered.
 Each dietary habit will be represented by a distinct component.
+
+## Story 3
+
+In this story, we need to manage the animals' meals. This story is not very clear on how the "meal" is chosen:
+
+- Is it selected from all entities in the enclosure (plants and animals, regardless of their species), 
+or only from valid entities based on their diet?
+- Can an entity both eat and be eaten during the same day?
+- Furthermore, what happens if two animals target the same entity for their meal (i.e., can an entity be eaten multiple times)?
+- What happens if there is no target that meets the eating criteria?
+
+So I made the following choices:
+
+- Entities choose their meal only from all valid options.
+- An entity can both eat and be eaten during the same day.
+- An entity can be eaten multiple times (after all, a meal can be shared).
+- An entity that cannot eat dies.
+
+To do this, we will implement systems.
