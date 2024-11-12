@@ -1,0 +1,108 @@
+{
+  "Fern": {
+    "components": [
+      "PlantComponent"
+    ],
+    "entities": [
+      {},
+      {},
+      {}
+    ]
+  },
+  "Oak tree": {
+    "components": [
+      "PlantComponent"
+    ],
+    "entities": [
+      {},
+      {}
+    ]
+  },
+  "Lion": {
+    "components": [
+      "ZoophageComponent",
+      "AnimalComponent"
+    ],
+    "entities": [
+      {
+        "sex": "FEMALE",
+        "name": "Alice",
+        "age": 14
+      },
+      {
+        "sex": "MALE",
+        "name": "Bob"
+      }
+    ]
+  },
+  "Tiger": {
+    "components": [
+      "ZoophageComponent",
+      "AnimalComponent"
+    ],
+    "entities": [
+      {
+        "sex": "FEMALE"
+      }
+    ]
+  },
+  "Coyote": {
+    "components": [
+      "ZoophageComponent",
+      "AnimalComponent"
+    ],
+    "entities": [
+      {
+        "sex": "FEMALE"
+      },
+      {
+        "sex": "MALE"
+      },
+      {
+        "sex": "MALE"
+      }
+    ]
+  },
+  "Elephant": {
+    "components": [
+      "PhytophageComponent",
+      "AnimalComponent"
+    ],
+    "entities": [
+      {
+        "sex": "FEMALE"
+      }
+    ]
+  },
+  "Giraffe": {
+    "components": [
+      "PhytophageComponent",
+      "AnimalComponent"
+    ],
+    "entities": [
+      {
+        "sex": "MALE"
+      }
+    ]
+  },
+  "Antelope": {
+    "components": [
+      "PhytophageComponent",
+      "AnimalComponent"
+    ],
+    "entities": [
+      {
+        "sex": "FEMALE"
+      },
+      {
+        "sex": "MALE"
+      },
+      {
+        "sex": "FEMALE"
+      },
+      {
+        "sex": "MALE"
+      }
+    ]
+  }
+}
