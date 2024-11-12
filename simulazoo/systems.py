@@ -1,7 +1,9 @@
 import random
 
-from snecs import Query, entity_component, schedule_for_deletion
-
+import names
+from snecs import Query, entity_component, new_entity, schedule_for_deletion
+from . import const
+from copy import deepcopy
 from .components import (
     AnimalComponent,
     LivingBeingComponent,
@@ -9,6 +11,7 @@ from .components import (
     PlantComponent,
     ZoophageComponent,
 )
+from .enums import SexEnum
 
 __all__ = [
     "LivingBeingSystem",
@@ -18,8 +21,9 @@ __all__ = [
     "PhytophageSystem",
 ]
 
-
-## Bases
+###########
+## Bases ##
+###########
 
 
 class SystemBase:
@@ -47,7 +51,7 @@ class _DietBaseSystem(SystemBase):
 
     def process_entity(self, entity, components, world):
         living_being_cmp = components[0]
-        if living_being_cmp.hp > 5:
+        if living_being_cmp.hp > const.ANIMAL_HUNGER_THRESHOLD:
             # no need to feed today
             return
 
@@ -68,7 +72,9 @@ class _DietBaseSystem(SystemBase):
         raise NotImplementedError
 
 
-## Real systems
+##################
+## Real systems ##
+##################
 
 
 class LivingBeingSystem(SystemBase):
@@ -76,8 +82,11 @@ class LivingBeingSystem(SystemBase):
 
     def process_entity(self, entity, components, world):
         living_being_cmp = components[0]
-        living_being_cmp.age += 1
-        if living_being_cmp.hp <= 0 or living_being_cmp.age > 20:
+        living_being_cmp.age += const.LIVING_BEING_DAILY_INC_AGE
+        if (
+            living_being_cmp.hp <= const.LIVING_BEING_DEATH_THRESHOLD
+            or living_being_cmp.age > const.LIVING_BEING_MAX_AGE
+        ):
             schedule_for_deletion(entity, world=world)
 
 
@@ -89,7 +98,19 @@ class PlantSystem(SystemBase):
 
     def process_entity(self, entity, components, world):
         living_being_cmp = components[0]
-        living_being_cmp.hp += 1
+        living_being_cmp.hp += const.PLANT_DAILY_REGENERATION
+
+        if living_being_cmp.hp > const.PLANT_SPLIT_THRESHOLD:
+            # Let’s make a new plant
+            new_components = [deepcopy(component) for component in components]
+            new_living_being_cmp = new_components[0]
+            # set age and HP
+            new_living_being_cmp.hp //= 2  # split HP in halp round down
+            new_living_being_cmp.age = const.LIVING_BEING_BABY_AGE
+            # add it to the wold
+            new_entity(components=new_components, world=world)
+            # subtract hp lost during division
+            living_being_cmp.hp -= new_living_being_cmp.hp
 
 
 class AnimalSystem(SystemBase):
@@ -98,9 +119,47 @@ class AnimalSystem(SystemBase):
         AnimalComponent,
     )
 
+    def process(self, world):
+        # store initial animal list to avoid babys. This will also help us for partner finding
+        self.animals = list(Query(component_types=self.COMPONENTS, world=world))
+        for entity, components in self.animals:
+            self.process_entity(entity, components, world)
+
     def process_entity(self, entity, components, world):
         living_being_cmp = components[0]
-        living_being_cmp.hp -= 1
+        living_being_cmp.hp += const.ANIMAL_DAILY_REGENERATION
+
+        if living_being_cmp.hp > const.ANIMAL_HUNGER_THRESHOLD:
+            # no need to feed today, let find a partner to make a baby
+            # first, let’s try to find a partner
+            partners = [
+                (it_entity, it_components)
+                for it_entity, it_components in self.animals
+                if it_entity != entity
+            ]
+            partner_id, (partner_living_being_cmp, partner_animal_cmp) = random.choice(
+                partners
+            )
+            animal_cmp = components[1]
+            # let’s check if this animal is same species and different sex
+            if (
+                living_being_cmp.specie == partner_living_being_cmp.specie
+                and animal_cmp.sex != partner_animal_cmp.sex
+            ):
+                # make a baby
+                new_components = [deepcopy(component) for component in components]
+                new_living_being_cmp, new_animal_cmp = new_components
+                # set age and HP
+                new_living_being_cmp.hp = const.LIVING_BEING_DEFAULT_HP
+                new_living_being_cmp.age = const.LIVING_BEING_BABY_AGE
+                # set sex and name
+                new_animal_cmp.sex = random.choice([i for i in SexEnum])
+                new_animal_cmp.name = names.get_first_name(
+                    gender=new_animal_cmp.sex.name.lower()
+                )
+
+                # add it to the wold
+                new_entity(components=new_components, world=world)
 
 
 class ZoophageSystem(_DietBaseSystem):
@@ -115,10 +174,10 @@ class ZoophageSystem(_DietBaseSystem):
     )
 
     def eat(self, components, target_components, world):
-        # animals gain 5 HP by eating;
-        components[0].hp += 5
+        # zoophage gain 5 HP by eating;
+        components[0].hp += const.ZOOPHAGE_RECOVERY_AFTER_EATING
         # animals loose 4 HP when eaten
-        target_components[0].hp -= 4
+        target_components[0].hp -= const.ANIMAL_LIFE_LOST_FROM_ATTACK
 
 
 class PhytophageSystem(_DietBaseSystem):
@@ -134,6 +193,6 @@ class PhytophageSystem(_DietBaseSystem):
 
     def eat(self, components, target_components, world):
         # Phytophage gain 3 HP by eating;
-        components[0].hp += 3
+        components[0].hp += const.PHYTOPHAGE_RECOVERY_AFTER_EATING
         # plant loose 2 HP when eaten
-        target_components[0].hp -= 2
+        target_components[0].hp -= const.PLANT_LIFE_LOST_FROM_ATTACK

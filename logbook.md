@@ -66,6 +66,15 @@ We will also modify the report to display the HP information.
 
 ## Story 5
 
-We will also modify the report to display the age information.
+We will modify the report to display the age information.
 
+## Story 6
 
+Regarding the creation of a new plant, during the process, the parent plant loses half of its HP. 
+It is not specified whether this should be rounded or not. 
+Here, I have chosen that the total HP of both plants (new and parent) remains the same as before the creation.
+
+It is also not specified when reproduction and division should occur. 
+The choice has been made to perform them at the same time as the daily life cycle update. 
+This implies that the newly created entities at that moment will be able to feed and can also be targeted as a meal.
+We also assume that only animals that were not just born can reproduce, and we will generate their names randomly.
