@@ -54,3 +54,10 @@ So I made the following choices:
 - An entity that cannot eat dies.
 
 To do this, we will implement systems.
+
+## Story 4
+
+The concept of a living being was already introduced in Story 3, so we will reuse the component and add 
+the health points (HP). We will also add a new system to handle the death of entities due to a lack of HP.
+
+Another system for managing plants and animals will also be introduced.

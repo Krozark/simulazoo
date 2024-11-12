@@ -3,7 +3,7 @@ import logging
 from snecs import Query, World, new_entity, process_pending_deletions
 
 from .components import AnimalComponent, LivingBeingComponent, PlantComponent
-from .systems import PhytophageSystem, ZoophageSystem
+from .systems import PhytophageSystem, ZoophageSystem, LivingBeingSystem
 
 logger = logging.getLogger(__name__)
 
@@ -60,4 +60,5 @@ class Enclosure:
         return (
             PhytophageSystem(),
             ZoophageSystem(),
+            LivingBeingSystem(),
         )

@@ -11,6 +11,7 @@ from .components import (
 )
 
 __all__ = [
+    "LivingBeingSystem",
     "ZoophageSystem",
     "PhytophageSystem",
 ]
@@ -25,6 +26,14 @@ class SystemBase:
 
     def process_entity(self, entity, components, world):
         raise NotImplementedError
+
+
+class LivingBeingSystem(SystemBase):
+    COMPONENTS = (LivingBeingComponent,)
+
+    def process_entity(self, entity, components, world):
+        if components[0].hp <= 0:
+            schedule_for_deletion(entity, world=world)
 
 
 class _DietSystem(SystemBase):

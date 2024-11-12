@@ -24,6 +24,7 @@ class PlantComponent(RegisteredComponent):
 class LivingBeingComponent(RegisteredComponent):
     def __init__(self, specie: str):
         self.specie = specie
+        self.hp = 10
 
 
 class ZoophageComponent(RegisteredComponent):
