@@ -103,18 +103,28 @@ def build_enclosure():
     return enclosure
 
 
+def check_positive(value):
+    ivalue = int(value)
+    if ivalue <= 0:
+        raise argparse.ArgumentTypeError("%s is an invalid positive int value" % value)
+    return ivalue
+
+
 def main():
     # create an argument parser
     parser = argparse.ArgumentParser(prog="Simulazoo", description="A zoo simulator")
     parser.add_argument("-v", "--verbose", action="store_true")
+    parser.add_argument("-d", "--days", type=check_positive, default=1)
     # parse the arguments
     args = parser.parse_args()
     # setup logging
     setup_logging(verbose=args.verbose)
     # create enclosure
     enclosure = build_enclosure()
-    # simulate 1 day
-    enclosure.process_day()
+    enclosure.log_report()
+    # simulate days
+    for day in range(0, args.days):
+        enclosure.process_day()
     return 0
 
 
