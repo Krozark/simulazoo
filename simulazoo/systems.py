@@ -1,9 +1,10 @@
 import random
+from copy import deepcopy
 
 import names
 from snecs import Query, entity_component, new_entity, schedule_for_deletion
+
 from . import const
-from copy import deepcopy
 from .components import (
     AnimalComponent,
     LivingBeingComponent,
@@ -137,6 +138,9 @@ class AnimalSystem(SystemBase):
                 for it_entity, it_components in self.animals
                 if it_entity != entity
             ]
+            if not partners:
+                return
+
             partner_id, (partner_living_being_cmp, partner_animal_cmp) = random.choice(
                 partners
             )
