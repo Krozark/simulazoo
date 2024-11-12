@@ -76,7 +76,8 @@ class LivingBeingSystem(SystemBase):
 
     def process_entity(self, entity, components, world):
         living_being_cmp = components[0]
-        if living_being_cmp.hp <= 0:
+        living_being_cmp.age += 1
+        if living_being_cmp.hp <= 0 or living_being_cmp.age > 20:
             schedule_for_deletion(entity, world=world)
 
 
