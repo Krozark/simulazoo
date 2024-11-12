@@ -4,11 +4,11 @@ from snecs import Query, World, new_entity, process_pending_deletions
 
 from .components import AnimalComponent, LivingBeingComponent, PlantComponent
 from .systems import (
+    AnimalSystem,
     LivingBeingSystem,
     PhytophageSystem,
     PlantSystem,
     ZoophageSystem,
-    AnimalSystem,
 )
 
 logger = logging.getLogger(__name__)
