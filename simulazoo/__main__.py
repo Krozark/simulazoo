@@ -11,6 +11,7 @@ from .components import (
 )
 from .enclosure import Enclosure
 from .enums import SexEnum
+from .config import parse_config_file
 
 
 logger = logging.getLogger(__name__)
@@ -20,8 +21,7 @@ def setup_logging(verbose=False):
     logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
 
 
-def build_enclosure():
-    enclosure = Enclosure("first enclosure")
+def fill_default_enclosure(enclosure):
     # create 3 Fern plants
     for i in range(0, 3):
         enclosure.create_entity(
@@ -105,7 +105,16 @@ def build_enclosure():
         PhytophageComponent(),
         AnimalComponent(name="Mallory", sex=SexEnum.MALE),
     )
-    return enclosure
+
+
+def fill_enclosure_from_config(file, enclosure):
+    for entity_components in parse_config_file(file):
+        enclosure.create_entity(
+            *[
+                component_class(**components_kwargs)
+                for component_class, components_kwargs in entity_components.items()
+            ]
+        )
 
 
 def check_positive(value):
@@ -120,14 +129,23 @@ def main():
     parser = argparse.ArgumentParser(prog="Simulazoo", description="A zoo simulator")
     parser.add_argument("-v", "--verbose", action="store_true")
     parser.add_argument("-d", "--days", type=check_positive, default=1)
+    parser.add_argument("-c", "--config", type=argparse.FileType("r"))
     # parse the arguments
     args = parser.parse_args()
     # setup logging
     setup_logging(verbose=args.verbose)
     # create enclosure
-    enclosure = build_enclosure()
-    enclosure.log_report()
+    enclosure = Enclosure("first enclosure")
+
+    if args.config:
+        logger.info("Load config file, and fill enclosure with informations")
+        fill_enclosure_from_config(args.config, enclosure)
+    else:
+        logger.info("Fill enclosure with default")
+        fill_default_enclosure(enclosure)
+
     # simulate days
+    enclosure.log_report()
     for day in range(0, args.days):
         enclosure.process_day()
     return 0

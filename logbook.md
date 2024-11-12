@@ -78,3 +78,15 @@ It is also not specified when reproduction and division should occur.
 The choice has been made to perform them at the same time as the daily life cycle update. 
 This implies that the newly created entities at that moment will be able to feed and can also be targeted as a meal.
 We also assume that only animals that were not just born can reproduce, and we will generate their names randomly.
+
+## Story 7
+
+Empty, so nothing
+
+## Story 8
+
+The concept of software configuration is not very precise. 
+We will therefore assume that the configuration allows for creating species and associating characteristics with them.
+
+The configuration file will consist of a set of species names, each associated with the components that compose it, 
+and a list of entity of this species to create with their attributes.
