@@ -42,3 +42,9 @@ The docker image use the Interactive prompt by default
 ```shell
 docker run -it --rm simulazoo
 ```
+
+## Run Test
+
+```shell
+python -m pytest
+```

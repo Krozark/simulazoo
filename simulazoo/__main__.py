@@ -10,10 +10,21 @@ logger = logging.getLogger(__name__)
 
 
 def setup_logging(verbose=False):
+    """
+    Setup logging
+
+    :param verbose: activate debug on log
+    """
     logging.basicConfig(level=logging.DEBUG if verbose else logging.INFO)
 
 
 def check_positive(value):
+    """
+    Function that check if argumenet >= 0
+
+    :param value: value to tests
+    :return: bool
+    """
     ivalue = int(value)
     if ivalue <= 0:
         raise argparse.ArgumentTypeError("%s is an invalid positive int value" % value)
