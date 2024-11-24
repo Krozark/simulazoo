@@ -2,7 +2,6 @@ import json
 import logging
 
 from snecs import (
-    Query,
     World,
     deserialize_world,
     new_entity,
@@ -20,6 +19,7 @@ from .components import (
 )
 from .config import parse_config_file
 from .enums import SexEnum
+from .report import EnclosureReportBuilder
 from .systems import (
     AnimalSystem,
     LivingBeingSystem,
@@ -27,8 +27,6 @@ from .systems import (
     PlantSystem,
     ZoophageSystem,
 )
-
-from .report import EnclosureReportBuilder
 
 logger = logging.getLogger(__name__)
 

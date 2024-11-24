@@ -1,9 +1,10 @@
 import random
 
+import names
 from snecs import Component, RegisteredComponent
+
 from . import const
 from .enums import SexEnum
-import names
 
 __all__ = [
     "LivingBeingComponent",
