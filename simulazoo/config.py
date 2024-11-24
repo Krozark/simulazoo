@@ -1,12 +1,15 @@
 import json
 import logging
+from typing import BinaryIO
 
 from jsonschema import validate
 
 from . import components
 
+
 logger = logging.getLogger(__name__)
 
+# json schema of the config file
 schema = {
     "$schema": "http://json-schema.org/draft-06/schema#",
     "type": "object",
@@ -35,7 +38,14 @@ schema = {
 }
 
 
-def parse_config_file(file):
+def parse_config_file(file: BinaryIO):
+    """
+    Parse a json file. This file need to meet the sepcific schema defined above.
+    This file contains enclosure information.
+
+    :param file: a file like object to get data from
+    :return:a list[dict(components, component kwargs)]
+    """
     data = json.load(file)
     validate(instance=data, schema=schema)
 
@@ -68,7 +78,7 @@ def parse_config_file(file):
                     logger.error(
                         f"Unknown attribute {attribute_key} in component list {component_classes}. Skipping it."
                     )
-
+            # add the component to this entity
             entities.append(component_kwargs)
 
     return entities

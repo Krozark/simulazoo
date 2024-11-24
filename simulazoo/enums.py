@@ -6,5 +6,8 @@ __all__ = [
 
 
 class SexEnum(str, Enum):
+    """
+    Enum that contain sex Animals possibilities used
+    """
     MALE = "M"
     FEMALE = "F"

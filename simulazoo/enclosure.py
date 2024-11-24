@@ -7,7 +7,7 @@ from snecs import (
     deserialize_world,
     new_entity,
     process_pending_deletions,
-    serialize_world,
+    serialize_world
 )
 from snecs.ecs import move_world
 
@@ -28,6 +28,8 @@ from .systems import (
     ZoophageSystem,
 )
 
+from .report import EnclosureReportBuilder
+
 logger = logging.getLogger(__name__)
 
 __all__ = [
@@ -37,55 +39,58 @@ __all__ = [
 
 
 class Enclosure:
+    """
+    This class hold all data from the ECS together.
+    It also offers save, load and report capabilities.
+    """
 
     def __init__(self, name=None):
+        """
+        Create a new Enclosure
+
+        :param name: The name of the enclosure
+        """
         self.world = World(name)
-        self._day = 0
-        self._systems = self.get_systems()
+        self.day = 0
+        self._systems = self._get_systems()
+
+    @property
+    def name(self):
+        return self.world.name
 
     def create_entity(self, *components):
+        """
+        Add a new entity to the enclosure with its components.
+
+        :param components:  Components to add to the entity
+        :return: the newly created entity id
+        """
         entity = new_entity(components=components, world=self.world)
         return entity
 
-    def process_day(self, log_report=True):
+    def process_day(self, log_report: bool=True):
+        """
+        Loop through all the systems and build a report
+
+        :param log_report: generate the report
+        :return: None
+        """
         for system in self._systems:
             system.process(world=self.world)
         process_pending_deletions(world=self.world)
-        self._day += 1
+        self.day += 1
         if log_report:
             self.log_report()
 
-    def build_report(self):
-        report = [f"==== Report of enclosure {self.world.name}: day {self._day} ==="]
-        # start of report
+    def build_report(self) -> str:
+        """
+        Build a report from the
 
-        # stuff with plants
-        plant_query = Query([LivingBeingComponent, PlantComponent], world=self.world)
-        plant_number = sum(1 for _ in plant_query)
-        report.append(f"Plant ({plant_number}):")
-        for entity, (
-            living_being_cmp,
-            animal_cmp,
-        ) in plant_query:
-            report.append(
-                f" - Specie: {living_being_cmp.specie}, HP {living_being_cmp.hp}, Age {living_being_cmp.age}"
-            )
-
-        # stuff with animals
-        animal_query = Query([LivingBeingComponent, AnimalComponent], world=self.world)
-        animal_number = sum(1 for _ in animal_query)
-        report.append(f"Animals ({animal_number}): ")
-        for entity, (
-            living_being_cmp,
-            animal_cmp,
-        ) in animal_query:
-            report.append(
-                f" - Name: {animal_cmp.name}, Sex: {animal_cmp.sex.name}, Specie: {living_being_cmp.specie}, HP {living_being_cmp.hp}, Age {living_being_cmp.age}"
-            )
-
-        # end of report
-        report.append("==============================")
-        return "\n".join(report)
+        :return: The report as a str.
+        """
+        report_builder = EnclosureReportBuilder(self)
+        output = report_builder.build_repport()
+        return output.read()
 
     def log_report(self):
         report = self.build_report()
@@ -111,7 +116,7 @@ class Enclosure:
             )
 
     @staticmethod
-    def get_systems():
+    def _get_systems():
         return (
             # manage need of food
             PlantSystem(),
