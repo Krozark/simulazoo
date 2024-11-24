@@ -49,7 +49,7 @@ class Enclosure:
             animal_cmp,
         ) in plant_query:
             report.append(
-                f" - Specie: {living_being_cmp.specie}, HP {living_being_cmp.hp}"
+                f" - Specie: {living_being_cmp.specie}, HP {living_being_cmp.hp}, Age {living_being_cmp.age}"
             )
 
         # stuff with animals
@@ -61,7 +61,7 @@ class Enclosure:
             animal_cmp,
         ) in animal_query:
             report.append(
-                f" - Name: {animal_cmp.name}, Sex: {animal_cmp.sex.name}, Specie: {living_being_cmp.specie}, HP {living_being_cmp.hp}"
+                f" - Name: {animal_cmp.name}, Sex: {animal_cmp.sex.name}, Specie: {living_being_cmp.specie}, HP {living_being_cmp.hp}, Age {living_being_cmp.age}"
             )
 
         # end of report

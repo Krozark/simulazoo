@@ -63,3 +63,9 @@ the health points (HP). We will also add a new system to handle the death of ent
 Another system for managing plants and animals will also be introduced.
 
 We will also modify the report to display the HP information.
+
+## Story 5
+
+We will also modify the report to display the age information.
+
+
