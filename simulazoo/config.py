@@ -40,7 +40,7 @@ schema = {
 
 def parse_config_file(file: BinaryIO):
     """
-    Parse a json file. This file need to meet the sepcific schema defined above.
+    Parse a json file. This file need to meet the specific schema defined above.
     This file contains enclosure information.
 
     :param file: a file like object to get data from
